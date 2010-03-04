@@ -88,7 +88,7 @@
 	 
     mach_error_t
 mach_override(
-    char *originalFunctionSymbolName,
+    const char *originalFunctionSymbolName,
     const char *originalFunctionLibraryNameHint,
     const void *overrideFunctionAddress,
     void **originalFunctionReentryIsland );
