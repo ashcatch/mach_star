@@ -155,6 +155,36 @@ fixupInstructions(
 #pragma mark	-
 #pragma mark	(Interface)
 
+	mach_error_t
+mach_override(
+		const char *originalFunctionSymbolName,
+		const char *originalFunctionLibraryNameHint,
+		const void *overrideFunctionAddress,
+		void **originalFunctionReentryIsland )
+{
+	assert( originalFunctionSymbolName );
+	assert( strlen( originalFunctionSymbolName ) );
+	assert( overrideFunctionAddress );
+	
+	//	Lookup the original function's code pointer.
+	long	*originalFunctionPtr;
+	if( originalFunctionLibraryNameHint )
+		_dyld_lookup_and_bind_with_hint(
+			originalFunctionSymbolName,
+			originalFunctionLibraryNameHint,
+			(void*) &originalFunctionPtr,
+			NULL );
+	else
+		_dyld_lookup_and_bind(
+			originalFunctionSymbolName,
+			(void*) &originalFunctionPtr,
+			NULL );
+	
+	//printf ("In mach_override\n");
+	return mach_override_ptr( originalFunctionPtr, overrideFunctionAddress,
+		originalFunctionReentryIsland );
+}
+
 #if defined(__i386__) || defined(__x86_64__)
 mach_error_t makeIslandExecutable(void *address) {
 	mach_error_t err = err_none;
